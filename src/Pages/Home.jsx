@@ -1,7 +1,8 @@
-import { Slider } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Checkbox, FormControlLabel, FormGroup, Slider, Typography } from '@mui/material';
 import { Breadcrumb, BreadcrumbItem, Label, Select } from 'flowbite-react';
 import { useState } from 'react';
 import { HiHome } from 'react-icons/hi';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 function valuetext(value1) {
   return `${value1}°C`;
@@ -49,10 +50,9 @@ const Home = () => {
         {/* Sidebar  */}
         <div className="max-w-[280px] w-[280px] ">
           {/* Price Range Slider */}
-          <div className="rounded-[7px] single_box  bg-white">
+          <div className="rounded-[7px] mb-2 single_box  bg-white">
             <h3 className="text-[#111] p-[22px] text-[17px] border-b border-[#eee] pb-[10px]">Price Range</h3>
             <div className="p-[22px]">
-              {/* Slider Componet */}
               <div className="mx-4">
                 <Slider
                   getAriaLabel={() => 'Minimum distance shift'}
@@ -70,6 +70,24 @@ const Home = () => {
                 <p className="py-1 w-[80px] text-center border">{value1[1]}</p>
               </div>
             </div>
+          </div>
+          {/* Price range slider end here */}
+          {/* Product Brand Catogory Sorting */}
+          <div>
+            <Accordion className="px-2" defaultExpanded>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
+                <Typography className="text-[#111] text-[17px] w-full pt-[5px] pb-[10px] border-b border-[#eee] ">Brand</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <FormGroup>
+                  <FormControlLabel control={<Checkbox size="small" />} label="Apple" />
+                  <FormControlLabel control={<Checkbox size="small" />} label="Hp" />
+                  <FormControlLabel control={<Checkbox size="small" />} label="Asus" />
+                  <FormControlLabel control={<Checkbox size="small" />} label="Dell" />
+                  <FormControlLabel control={<Checkbox size="small" />} label="Acer" />
+                </FormGroup>
+              </AccordionDetails>
+            </Accordion>
           </div>
         </div>
 
@@ -94,6 +112,7 @@ const Home = () => {
                   <option>Default</option>
                   <option>{`Price (Low > High)`}</option>
                   <option>{`Price (High > Low)`}</option>
+                  <option>{`Date Added : Newest first`}</option>
                 </Select>
               </div>
             </div>

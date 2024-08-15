@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 body {
-  font-family: 'Asap';
+  font-family: 'Asap', sans-serif;
   font-optical-sizing: auto;
 }
 
@@ -32,8 +32,21 @@ main option select {
 }
 
 /* Box shaodow */
-
 .single_box {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   border-radius: 6px;
+}
+
+/* Brand sort CSS */
+.css-eqpfi5-MuiAccordionSummary-content.Mui-expanded {
+  margin: 12px 0 0 0 !important;
+}
+
+.css-j204z7-MuiFormControlLabel-root:hover {
+  background: #f1f3f5;
+  border-radius: 5px;
+}
+
+.css-j204z7-MuiFormControlLabel-root {
+  font-size: 14px;
 }
