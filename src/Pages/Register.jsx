@@ -1,4 +1,5 @@
 import { Button, Checkbox, Label, TextInput } from 'flowbite-react';
+import { FcGoogle } from 'react-icons/fc';
 import { Link } from 'react-router-dom';
 
 const Register = () => {
@@ -31,6 +32,16 @@ const Register = () => {
           Register new account
         </Button>
       </form>
+      <button className="flex items-center mt-3 justify-center gap-2 py-2 border border-secondary rounded-lg w-full">
+        Continue With
+        <FcGoogle />
+      </button>
+      <p className="mt-5 text-[13px]">
+        If you already have an account with us, please login at the{' '}
+        <Link to="/login" className="text-primary hover:underline">
+          login page.
+        </Link>
+      </p>
     </section>
   );
 };

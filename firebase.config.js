@@ -7,12 +7,12 @@ import { getAuth } from 'firebase/auth';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: 'AIzaSyDU8lCe9ZqJ3xPC_OzSavmZJRzDpbRKHmw',
-  authDomain: 'future-tech-42def.firebaseapp.com',
-  projectId: 'future-tech-42def',
-  storageBucket: 'future-tech-42def.appspot.com',
-  messagingSenderId: '102513129543',
-  appId: '1:102513129543:web:3057a1e1da4ff82dd99962',
+  apiKey: import.meta.env.VITE_APIKEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSEGEING_ID,
+  appId: import.meta.env.VITE_APP_ID,
 };
 
 // Initialize Firebase

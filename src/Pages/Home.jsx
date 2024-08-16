@@ -76,7 +76,9 @@ const Home = () => {
           <div>
             <Accordion className="px-2" defaultExpanded>
               <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
-                <Typography className="text-[#111] text-[17px] w-full pt-[5px] pb-[10px] border-b border-[#eee] ">Brand</Typography>
+                <Typography className="text-[#111] accor-heading text-[17px] w-full pt-[5px] pb-[10px] border-b border-[#eee] ">
+                  Brand
+                </Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <FormGroup>

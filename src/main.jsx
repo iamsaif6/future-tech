@@ -4,10 +4,10 @@ import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Main from './routes/Main';
 import Home from './Pages/Home';
-import { createTheme, ThemeProvider } from '@mui/material';
 import AuthProvider from './Auth/AuthProvider';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
+import { createTheme, ThemeProvider } from '@mui/material';
 const theme = createTheme({
   typography: {
     fontFamily: ['Asap', 'sans-serif'].join(','),
