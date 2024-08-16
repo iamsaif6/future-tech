@@ -34,12 +34,11 @@ const Navbar = () => {
               <p className="text-white mb-0">
                 Account
                 <p className="block  text-[11px] font-light">
-                  <NavLink className="hover:text-primary hover:opacity-100 opacity-45" to="register">
+                  <NavLink className="hover:text-primary hover:opacity-100 opacity-45" to="/register">
                     Register
                   </NavLink>
                   <span className="opacity-45"> or </span>
                   <NavLink className="hover:text-primary hover:opacity-100 opacity-45" to="/login">
-                    {' '}
                     Login
                   </NavLink>
                 </p>
