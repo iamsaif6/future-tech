@@ -6,6 +6,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import axios from 'axios';
 import { FaCartPlus } from 'react-icons/fa6';
 import { FaPlus, FaSearch } from 'react-icons/fa';
+import { IoFilter } from 'react-icons/io5';
 
 const minDistance = 100;
 const Home = () => {
@@ -17,6 +18,7 @@ const Home = () => {
   const [searchText, setSearchText] = useState('');
   const [brand, setBrand] = useState([]);
   const [value1, setValue1] = useState([0, 2500]);
+  const [isMobile, SetIsMobile] = useState(false);
   // sort and filter
   const [order, setOrder] = useState('');
   // handle chnage order price / date
@@ -129,7 +131,7 @@ const Home = () => {
       {/* Main Content */}
       <main className="max-w-[1280px] flex gap-6 py-8 px-4 mx-auto">
         {/* Sidebar  */}
-        <div className="max-w-[280px] w-[280px] ">
+        <div className="max-w-[280px] hidden lg:block w-[280px] ">
           {/* Price Range Slider */}
           <div className="rounded-[7px] mb-2 single_box  bg-white">
             <h3 className="text-[#111] p-[22px] text-[17px] border-b border-[#eee] pb-[10px]">Price Range</h3>
@@ -178,9 +180,15 @@ const Home = () => {
           <div className="bg-white single_box mb-2  py-[10px] px-[20px] ">
             {/* Sort and pagination items count bar */}
             <div className="flex py-[4px] items-center justify-between">
-              <h2 className="text-[16px] font-semibold">All Laptop</h2>
+              {isMobile ? (
+                <button>
+                  <IoFilter /> Filter
+                </button>
+              ) : (
+                <h2 className="text-[16px] font-semibold">All Laptop</h2>
+              )}
               <div className="flex items-center gap-3">
-                <div className="max-w-sm flex gap-2 items-center">
+                <div className="max-w-sm hidden md:flex gap-2 items-center">
                   <Label className="text-[#666] font-semibold text-[13px]" htmlFor="itemNumber" value="Show:" />
                   <Select onChange={handleItemPerPage} value={itemsPerPage} id="itemNumber" required>
                     <option value="10">10</option>
@@ -201,7 +209,7 @@ const Home = () => {
             </div>
           </div>
           {/* Products  */}
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-2">
             {products &&
               products.map(item => {
                 return (
