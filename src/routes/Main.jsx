@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import Navbar from '../Components/Navbar';
 import { Toaster } from 'react-hot-toast';
-// import Footer from '../Components/Footer';
+import { Footers } from '../Components/Footers';
 
 const Main = () => {
   return (
@@ -9,7 +9,7 @@ const Main = () => {
       <Toaster />
       <Navbar></Navbar>
       <Outlet></Outlet>
-      {/* <Footer></Footer> */}
+      <Footers></Footers>
     </div>
   );
 };

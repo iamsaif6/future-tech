@@ -16,7 +16,7 @@ const Home = () => {
   const numberOfPage = Math.ceil(parseInt(63 / itemsPerPage));
   const [searchText, setSearchText] = useState('');
   const [brand, setBrand] = useState([]);
-  const [value1, setValue1] = useState([0, 5000]);
+  const [value1, setValue1] = useState([0, 2500]);
   // sort and filter
   const [order, setOrder] = useState('');
   // handle chnage order price / date
@@ -139,7 +139,7 @@ const Home = () => {
                   getAriaLabel={() => 'Minimum distance shift'}
                   value={value1}
                   min={0}
-                  max={5000}
+                  max={2500}
                   onChange={handleChange1}
                   valueLabelDisplay="auto"
                   disableSwap
@@ -243,7 +243,7 @@ const Home = () => {
               })}
           </div>
           {/* Paginations */}
-          <div className="flex overflow-x-auto sm:justify-center">
+          <div className="flex mt-9 mb-5 overflow-x-auto sm:justify-center">
             <Pagination currentPage={currentPage} totalPages={numberOfPage} onPageChange={onPageChange} showIcons />
           </div>
         </div>
