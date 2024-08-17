@@ -5,7 +5,7 @@ import { HiHome } from 'react-icons/hi';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import axios from 'axios';
 import { FaCartPlus } from 'react-icons/fa6';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaSearch } from 'react-icons/fa';
 
 const minDistance = 100;
 const Home = () => {
@@ -14,12 +14,27 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const numberOfPage = Math.ceil(parseInt(63 / itemsPerPage));
+  const [searchText, setSearchText] = useState('');
+  // sort and filter
+  const [order, setOrder] = useState('');
+  const handleChangeOrder = e => {
+    setLoading(true);
+    setOrder(e.target.value);
+    setCurrentPage(1);
+  };
+
+  //Handle searchsubmit
+  const handleSearch = e => {
+    e.preventDefault();
+    setCurrentPage(1);
+    setLoading(true);
+    setSearchText(e.target.search.value);
+  };
 
   const onPageChange = page => {
     setLoading(true);
     setCurrentPage(page);
   };
-
   const handleItemPerPage = e => {
     setLoading(true);
     setItemsPerPage(parseInt(e.target.value));
@@ -41,11 +56,13 @@ const Home = () => {
 
   // API Requests
   useEffect(() => {
-    axios.get(`${import.meta.env.VITE_DB_URL}/products?page=${currentPage}&items=${itemsPerPage}`).then(res => {
-      setProducts(res.data);
-    });
+    axios
+      .get(`${import.meta.env.VITE_DB_URL}/products?page=${currentPage}&items=${itemsPerPage}&order=${order}&filter=${searchText}`)
+      .then(res => {
+        setProducts(res.data);
+      });
     setLoading(false);
-  }, [currentPage, itemsPerPage]);
+  }, [currentPage, itemsPerPage, order, searchText]);
 
   return (
     <div className=" relative bg-[#f2f4f8]">
@@ -71,6 +88,15 @@ const Home = () => {
               original branded laptop from Future Tech Laptop shop in BD. Browse below and Order yours now!
             </p>
           </section>
+          {/* Search Bar */}
+          <div className="max-w-[400px] relative mt-7 mb-2 mx-auto">
+            <form onSubmit={handleSearch}>
+              <input placeholder="Search" className="w-full rounded-md border-[#666]" type="text" name="search" id="" />
+              <button type="submit" className="absolute top-1/2 right-4 -translate-y-1/2">
+                <FaSearch></FaSearch>
+              </button>
+            </form>
+          </div>
         </div>
       </div>
       {/* Main Content */}
@@ -137,11 +163,11 @@ const Home = () => {
                 </div>
                 <div className="max-w-sm flex gap-2 items-center">
                   <Label className="text-[#666] font-semibold text-[13px]" htmlFor="sort" value="Sort By: " />
-                  <Select id="sort" required>
-                    <option>Default</option>
-                    <option>{`Price (Low > High)`}</option>
-                    <option>{`Price (High > Low)`}</option>
-                    <option>{`Date Added : Newest first`}</option>
+                  <Select onChange={handleChangeOrder} id="sort" required>
+                    <option value="">Default</option>
+                    <option value="low">{`Price (Low > High)`}</option>
+                    <option value="high">{`Price (High > Low)`}</option>
+                    <option value="date">{`Date Added : Newest first`}</option>
                   </Select>
                 </div>
               </div>
