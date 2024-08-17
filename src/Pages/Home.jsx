@@ -1,16 +1,31 @@
 import { Accordion, AccordionDetails, AccordionSummary, Checkbox, FormControlLabel, FormGroup, Slider, Typography } from '@mui/material';
-import { Breadcrumb, BreadcrumbItem, Label, Select } from 'flowbite-react';
-import { useState } from 'react';
+import { Breadcrumb, BreadcrumbItem, Label, Pagination, Select, Spinner } from 'flowbite-react';
+import { useEffect, useState } from 'react';
 import { HiHome } from 'react-icons/hi';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
-function valuetext(value1) {
-  return `${value1}°C`;
-}
+import axios from 'axios';
+import { FaCartPlus } from 'react-icons/fa6';
+import { FaPlus } from 'react-icons/fa';
 
 const minDistance = 100;
-
 const Home = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [products, setProducts] = useState();
+  const [loading, setLoading] = useState(false);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const numberOfPage = Math.ceil(parseInt(63 / itemsPerPage));
+
+  const onPageChange = page => {
+    setLoading(true);
+    setCurrentPage(page);
+  };
+
+  const handleItemPerPage = e => {
+    setLoading(true);
+    setItemsPerPage(parseInt(e.target.value));
+    setCurrentPage(1);
+  };
+
   //Price Range Slider
   const [value1, setValue1] = useState([0, 100000]);
   const handleChange1 = (event, newValue, activeThumb) => {
@@ -24,8 +39,21 @@ const Home = () => {
     }
   };
 
+  // API Requests
+  useEffect(() => {
+    axios.get(`${import.meta.env.VITE_DB_URL}/products?page=${currentPage}&items=${itemsPerPage}`).then(res => {
+      setProducts(res.data);
+    });
+    setLoading(false);
+  }, [currentPage, itemsPerPage]);
+
   return (
-    <div className="bg-[#f2f4f8]">
+    <div className=" relative bg-[#f2f4f8]">
+      {loading && (
+        <div className="h-[100vh] bg-[#00000025] fixed top-0 left-0  w-[100vw] z-50 flex items-center justify-center">
+          <Spinner aria-label="Extra large spinner example" size="xl" />
+        </div>
+      )}
       {/* Breadcrubms */}
       <div className="bg-white border border-b-[1px] border-[#ddd]">
         <div className="max-w-[1280px] py-8 px-4 mx-auto">
@@ -61,7 +89,6 @@ const Home = () => {
                   max={100000}
                   onChange={handleChange1}
                   valueLabelDisplay="auto"
-                  getAriaValueText={valuetext}
                   disableSwap
                 />
               </div>
@@ -94,30 +121,77 @@ const Home = () => {
         </div>
 
         {/* Main Content */}
-        <div className="bg-white single_box flex-1 py-[10px] px-[20px] ">
-          {/* Sort and pagination items count bar */}
-          <div className="flex  items-center justify-between">
-            <h2 className="text-[16px] font-semibold">All Laptop</h2>
-            <div className="flex items-center gap-3">
-              <div className="max-w-sm flex gap-2 items-center">
-                <Label className="text-[#666] font-semibold text-[13px]" htmlFor="itemNumber" value="Show:" />
-                <Select id="itemNumber" required>
-                  <option>10</option>
-                  <option>20</option>
-                  <option>30</option>
-                  <option>40</option>
-                </Select>
-              </div>
-              <div className="max-w-sm flex gap-2 items-center">
-                <Label className="text-[#666] font-semibold text-[13px]" htmlFor="sort" value="Sort By: " />
-                <Select id="sort" required>
-                  <option>Default</option>
-                  <option>{`Price (Low > High)`}</option>
-                  <option>{`Price (High > Low)`}</option>
-                  <option>{`Date Added : Newest first`}</option>
-                </Select>
+        <div className="flex-1">
+          <div className="bg-white single_box mb-2  py-[10px] px-[20px] ">
+            {/* Sort and pagination items count bar */}
+            <div className="flex py-[4px] items-center justify-between">
+              <h2 className="text-[16px] font-semibold">All Laptop</h2>
+              <div className="flex items-center gap-3">
+                <div className="max-w-sm flex gap-2 items-center">
+                  <Label className="text-[#666] font-semibold text-[13px]" htmlFor="itemNumber" value="Show:" />
+                  <Select onChange={handleItemPerPage} value={itemsPerPage} id="itemNumber" required>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                  </Select>
+                </div>
+                <div className="max-w-sm flex gap-2 items-center">
+                  <Label className="text-[#666] font-semibold text-[13px]" htmlFor="sort" value="Sort By: " />
+                  <Select id="sort" required>
+                    <option>Default</option>
+                    <option>{`Price (Low > High)`}</option>
+                    <option>{`Price (High > Low)`}</option>
+                    <option>{`Date Added : Newest first`}</option>
+                  </Select>
+                </div>
               </div>
             </div>
+          </div>
+          {/* Products  */}
+          <div className="grid grid-cols-4 gap-2">
+            {products &&
+              products.map(item => {
+                return (
+                  <div key={item._id} className="bg-white flex flex-col single_box">
+                    <div className="p-5 relative border-b-[2px]">
+                      <img className="w-full" src={item.productImage} alt="" />
+                      <span className="text-[12px] bg-[#662A8F] absolute left-0 top-4 py-[3px] px-[15px] text-white rounded-tr-full rounded-br-full">
+                        Save: ${Math.floor(item.price - item.discountPrice)}
+                      </span>
+                    </div>
+                    <div className="flex flex-1 flex-col p-4">
+                      <h4 className="text-[15px] flex-grow-0 font-semibold  mb-4">
+                        <a className="hover:text-primary hover:underline" href="#">
+                          {item.productName}
+                        </a>
+                      </h4>
+                      <div className="flex-1 pb-3 border-b">
+                        <ul className="text-[#666] text-[13px]  space-y-[10px] list-disc ml-3">
+                          {item.description.map(items => {
+                            return <li key={items}>{items}</li>;
+                          })}
+                        </ul>
+                      </div>
+                      <div className="flex flex-grow-0 items-center mt-3 justify-center gap-2">
+                        <span className="text-primary text-[16px] font-semibold">$ {item.price}</span>
+                        <span className="text-[12px] font-medium text-[#666] line-through">$ {item.discountPrice}</span>
+                      </div>
+                      <div className="mt-3">
+                        <button className="flex hover:bg-secondary hover:text-white text-secondary justify-center rounded-[5px] py-[8px] items-center gap-2 bg-[#F5F6FB] w-full">
+                          <FaCartPlus></FaCartPlus> <span className="text-[13px] font-medium">Buy Now</span>
+                        </button>
+                        <button className="flex mt-3 hover:bg-[#F5F6FB] hover:text-[#222] text-[#666666] justify-center rounded-[5px] py-[8px] items-center gap-2 w-full">
+                          <FaPlus className="text-[14px]"></FaPlus> <span className="text-[13px] font-medium">Add to compare</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+          {/* Paginations */}
+          <div className="flex overflow-x-auto sm:justify-center">
+            <Pagination currentPage={currentPage} totalPages={numberOfPage} onPageChange={onPageChange} showIcons />
           </div>
         </div>
       </main>
