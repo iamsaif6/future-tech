@@ -79,14 +79,9 @@ const Home = () => {
   useEffect(() => {
     axios
       .get(
-        `${import.meta.env.VITE_DB_URL}/products?
-        &page=${currentPage}
-        &items=${itemsPerPage}
-        &from=${value1[0]}
-        &to=${value1[1]}
-        &order=${order}
-        &filter=${searchText}
-        &brand=${brand}`
+        `${import.meta.env.VITE_DB_URL}/products?&page=${currentPage}&items=${itemsPerPage}&from=${value1[0]}&to=${
+          value1[1]
+        }&order=${order}&filter=${searchText}&brand=${brand}`
       )
       .then(res => {
         setProducts(res.data);
