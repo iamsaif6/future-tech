@@ -15,19 +15,40 @@ const Home = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const numberOfPage = Math.ceil(parseInt(63 / itemsPerPage));
   const [searchText, setSearchText] = useState('');
+  const [brand, setBrand] = useState([]);
+  const [value1, setValue1] = useState([0, 5000]);
   // sort and filter
   const [order, setOrder] = useState('');
+  // handle chnage order price / date
   const handleChangeOrder = e => {
     setLoading(true);
     setOrder(e.target.value);
     setCurrentPage(1);
   };
 
+  //handle Brand Select
+  const handleBrand = e => {
+    setLoading(true);
+    const value = e.target.value;
+    if (e.target.checked) {
+      if (brand.includes(value)) {
+        return;
+      }
+      setBrand([...brand, value]);
+    } else if (!e.target.checked) {
+      const filteredBrand = brand.filter(items => {
+        return items !== value;
+      });
+      setBrand(filteredBrand);
+    }
+  };
+
   //Handle searchsubmit
   const handleSearch = e => {
+    // setLoading(true);
     e.preventDefault();
     setCurrentPage(1);
-    setLoading(true);
+    console.log(e.target.search.value == false);
     setSearchText(e.target.search.value);
   };
 
@@ -42,7 +63,7 @@ const Home = () => {
   };
 
   //Price Range Slider
-  const [value1, setValue1] = useState([0, 100000]);
+
   const handleChange1 = (event, newValue, activeThumb) => {
     if (!Array.isArray(newValue)) {
       return;
@@ -57,12 +78,23 @@ const Home = () => {
   // API Requests
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_DB_URL}/products?page=${currentPage}&items=${itemsPerPage}&order=${order}&filter=${searchText}`)
+      .get(
+        `${import.meta.env.VITE_DB_URL}/products?
+        &page=${currentPage}
+        &items=${itemsPerPage}
+        &from=${value1[0]}
+        &to=${value1[1]}
+        &order=${order}
+        &filter=${searchText}
+        &brand=${brand}`
+      )
       .then(res => {
         setProducts(res.data);
       });
     setLoading(false);
-  }, [currentPage, itemsPerPage, order, searchText]);
+  }, [currentPage, itemsPerPage, order, searchText, brand, value1]);
+
+  console.log(products);
 
   return (
     <div className=" relative bg-[#f2f4f8]">
@@ -82,17 +114,17 @@ const Home = () => {
             <BreadcrumbItem>All Laptop</BreadcrumbItem>
           </Breadcrumb>
           <section>
-            <h1 className="text-secondary mb-[5px] mt-[15px] text-[22px]">Laptop Price in Bangladesh</h1>
+            <h1 className="text-secondary mb-[5px] mt-[15px] text-[22px]">Laptop and Smart Phone Prices</h1>
             <p className="text-[13px]">
-              Laptop Price starts from BDT 27,500 to BDT 1,095,000 in Bangladesh, depending on Brand, Specifications, and Features. Buy
-              original branded laptop from Future Tech Laptop shop in BD. Browse below and Order yours now!
+              Laptop & Smart-Phone Price starts from USD 100 to USD 5000 for Wordwide, depending on Brand, Specifications, and Features. Buy
+              original branded laptop from Future Tech Laptop shop in US. Browse below and Order yours now!
             </p>
           </section>
           {/* Search Bar */}
           <div className="max-w-[400px] relative mt-7 mb-2 mx-auto">
             <form onSubmit={handleSearch}>
               <input placeholder="Search" className="w-full rounded-md border-[#666]" type="text" name="search" id="" />
-              <button type="submit" className="absolute top-1/2 right-4 -translate-y-1/2">
+              <button className="absolute top-1/2 right-4 -translate-y-1/2">
                 <FaSearch></FaSearch>
               </button>
             </form>
@@ -112,7 +144,7 @@ const Home = () => {
                   getAriaLabel={() => 'Minimum distance shift'}
                   value={value1}
                   min={0}
-                  max={100000}
+                  max={5000}
                   onChange={handleChange1}
                   valueLabelDisplay="auto"
                   disableSwap
@@ -135,11 +167,11 @@ const Home = () => {
               </AccordionSummary>
               <AccordionDetails>
                 <FormGroup>
-                  <FormControlLabel control={<Checkbox size="small" />} label="Apple" />
-                  <FormControlLabel control={<Checkbox size="small" />} label="Hp" />
-                  <FormControlLabel control={<Checkbox size="small" />} label="Asus" />
-                  <FormControlLabel control={<Checkbox size="small" />} label="Dell" />
-                  <FormControlLabel control={<Checkbox size="small" />} label="Acer" />
+                  <FormControlLabel control={<Checkbox onChange={handleBrand} value="Apple" size="small" />} label="Apple" />
+                  <FormControlLabel control={<Checkbox onChange={handleBrand} value="HP" size="small" />} label="HP" />
+                  <FormControlLabel control={<Checkbox onChange={handleBrand} value="Asus" size="small" />} label="Asus" />
+                  <FormControlLabel control={<Checkbox onChange={handleBrand} value="Dell" size="small" />} label="Dell" />
+                  <FormControlLabel control={<Checkbox onChange={handleBrand} value="Acer" size="small" />} label="Acer" />
                 </FormGroup>
               </AccordionDetails>
             </Accordion>
