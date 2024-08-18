@@ -25,7 +25,6 @@ const Home = () => {
   const [order, setOrder] = useState('');
   // handle chnage order price / date
   const handleChangeOrder = e => {
-    setLoading(true);
     setOrder(e.target.value);
     setCurrentPage(1);
   };
@@ -47,7 +46,6 @@ const Home = () => {
 
   //handle Brand Select
   const handleBrand = e => {
-    setLoading(true);
     const value = e.target.value;
     if (e.target.checked) {
       if (brand.includes(value)) {
@@ -62,9 +60,8 @@ const Home = () => {
     }
   };
 
-  // handleC Category
+  // handle Category
   const handleCategory = e => {
-    // setLoading(true);
     const value = e.target.value;
     if (e.target.checked) {
       if (category.includes(value)) {
@@ -89,17 +86,16 @@ const Home = () => {
   };
 
   const onPageChange = page => {
-    setLoading(true);
     setCurrentPage(page);
   };
+
+  // Item Per Page Dropdown
   const handleItemPerPage = e => {
-    setLoading(true);
     setItemsPerPage(parseInt(e.target.value));
     setCurrentPage(1);
   };
 
   //Price Range Slider
-
   const handleChange1 = (event, newValue, activeThumb) => {
     if (!Array.isArray(newValue)) {
       return;
@@ -113,6 +109,7 @@ const Home = () => {
 
   // API Requests
   useEffect(() => {
+    setLoading(true);
     axios
       .get(
         `${import.meta.env.VITE_DB_URL}/products?&page=${currentPage}&items=${itemsPerPage}&from=${value1[0]}&to=${
@@ -121,14 +118,17 @@ const Home = () => {
       )
       .then(res => {
         setProducts(res.data);
+        // stop loading after 1s after the data load
+        setTimeout(() => {
+          setLoading(false);
+        }, 700);
       });
-    setLoading(false);
   }, [currentPage, itemsPerPage, order, searchText, brand, value1, category]);
 
   return (
     <div className=" relative bg-[#f2f4f8]">
       {loading && (
-        <div className="h-[100vh] bg-[#00000025] fixed top-0 left-0  w-[100vw] z-50 flex items-center justify-center">
+        <div className="h-[100vh] bg-[rgba(0,0,0,.75)] fixed top-0 left-0  w-[100vw] z-[99] flex items-center justify-center">
           <Spinner aria-label="Extra large spinner example" size="xl" />
         </div>
       )}
@@ -207,7 +207,7 @@ const Home = () => {
       </div>
 
       {/* Breadcrubms */}
-      <div className="bg-white border border-b-[1px] border-[#ddd]">
+      <div className="bg-white border-none md:border border-b-[1px] mt-[80px] md:mt-4 border-[#ddd]">
         <div className="max-w-[1280px] py-8 px-4 mx-auto">
           <Breadcrumb className="text-[#9999]" aria-label="Default breadcrumb example">
             <BreadcrumbItem href="#" icon={HiHome}></BreadcrumbItem>

@@ -39,7 +39,7 @@ const Login = () => {
   };
 
   return (
-    <section className="max-w-md mb-9 md:mb-5 mx-auto mt-12 md:mt-24 px-4">
+    <section className="max-w-md mb-9 md:mb-5 mx-auto  md:mt-24 mt-[130px] px-4">
       <h1 className=" mb-4 text-[20px]">Account Login</h1>
       <form onSubmit={handleLogin} className="flex max-w-md flex-col gap-4">
         <div>
