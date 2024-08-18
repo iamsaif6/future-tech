@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { HiHome } from 'react-icons/hi';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import axios from 'axios';
-import { FaCartPlus } from 'react-icons/fa6';
+import { FaCartPlus, FaX } from 'react-icons/fa6';
 import { FaPlus, FaSearch } from 'react-icons/fa';
 import { IoFilter } from 'react-icons/io5';
 
@@ -17,8 +17,10 @@ const Home = () => {
   const numberOfPage = Math.ceil(parseInt(63 / itemsPerPage));
   const [searchText, setSearchText] = useState('');
   const [brand, setBrand] = useState([]);
+  const [category, setCategory] = useState([]);
   const [value1, setValue1] = useState([0, 2500]);
   const [isMobile, SetIsMobile] = useState(false);
+  const [width, setWidth] = useState(window.innerWidth < 600 ? true : false);
   // sort and filter
   const [order, setOrder] = useState('');
   // handle chnage order price / date
@@ -27,6 +29,21 @@ const Home = () => {
     setOrder(e.target.value);
     setCurrentPage(1);
   };
+
+  // Chnage Pagination layout on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth) {
+        if (window.innerWidth < 600) {
+          setWidth(true);
+        } else {
+          setWidth(false);
+        }
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   //handle Brand Select
   const handleBrand = e => {
@@ -42,6 +59,23 @@ const Home = () => {
         return items !== value;
       });
       setBrand(filteredBrand);
+    }
+  };
+
+  // handleC Category
+  const handleCategory = e => {
+    // setLoading(true);
+    const value = e.target.value;
+    if (e.target.checked) {
+      if (category.includes(value)) {
+        return;
+      }
+      setCategory([...category, value]);
+    } else if (!e.target.checked) {
+      const filterCategory = category.filter(items => {
+        return items !== value;
+      });
+      setCategory(filterCategory);
     }
   };
 
@@ -83,15 +117,13 @@ const Home = () => {
       .get(
         `${import.meta.env.VITE_DB_URL}/products?&page=${currentPage}&items=${itemsPerPage}&from=${value1[0]}&to=${
           value1[1]
-        }&order=${order}&filter=${searchText}&brand=${brand}`
+        }&order=${order}&filter=${searchText}&brand=${brand}&category=${category}`
       )
       .then(res => {
         setProducts(res.data);
       });
     setLoading(false);
-  }, [currentPage, itemsPerPage, order, searchText, brand, value1]);
-
-  console.log(products);
+  }, [currentPage, itemsPerPage, order, searchText, brand, value1, category]);
 
   return (
     <div className=" relative bg-[#f2f4f8]">
@@ -100,6 +132,80 @@ const Home = () => {
           <Spinner aria-label="Extra large spinner example" size="xl" />
         </div>
       )}
+      {/* Mobile Sidebar */}
+      <div
+        onClick={() => SetIsMobile(!isMobile)}
+        className={isMobile ? `h-full block lg:hidden w-screen opacity-100 fixed bg-[#00000080] z-50` : `hidden opacity-0`}
+      >
+        <div
+          className={
+            isMobile
+              ? `max-w-[260px] relative translate-x-0 transition-all duration-[2s] bg-white  h-full block lg:hidden w-[280px] `
+              : `h-full block max-w-[260px] lg:hidden w-[280px] transition-all duration-[2s] -translate-x-[300px]`
+          }
+        >
+          {/* Close btn */}
+          <FaX className="absolute text-[17px] -right-2 text-white translate-x-full top-2"></FaX>
+          {/* Price Range Slider */}
+          <div className="rounded-[7px]  mb-2 single_box  bg-white">
+            <h3 className="text-[#111] p-[22px] text-[17px] border-b border-[#eee] pb-[10px]">Price Range</h3>
+            <div className="p-[22px]">
+              <div className="mx-4">
+                <Slider
+                  getAriaLabel={() => 'Minimum distance shift'}
+                  value={value1}
+                  min={0}
+                  max={2500}
+                  onChange={handleChange1}
+                  valueLabelDisplay="auto"
+                  disableSwap
+                />
+              </div>
+              <div className="flex text-[14px] mt-5 items-center justify-between">
+                <p className="py-1 w-[80px] text-center border">{value1[0]}</p>
+                <p className="py-1 w-[80px] text-center border">{value1[1]}</p>
+              </div>
+            </div>
+          </div>
+          {/* Price range slider end here */}
+          {/* Catogory Sorting */}
+          <div className="mb-2">
+            <Accordion className="px-2" defaultExpanded>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
+                <Typography className="text-[#111] accor-heading text-[17px] w-full pt-[5px] pb-[10px] border-b border-[#eee] ">
+                  Brand
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <FormGroup>
+                  <FormControlLabel control={<Checkbox onChange={handleCategory} value="Laptops" size="small" />} label="Laptops" />
+                  <FormControlLabel control={<Checkbox onChange={handleCategory} value="Phones" size="small" />} label="Phones" />
+                </FormGroup>
+              </AccordionDetails>
+            </Accordion>
+          </div>
+          {/* Product Brand Catogory Sorting */}
+          <div>
+            <Accordion className="px-2" defaultExpanded>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
+                <Typography className="text-[#111] accor-heading text-[17px] w-full pt-[5px] pb-[10px] border-b border-[#eee] ">
+                  Brand
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <FormGroup>
+                  <FormControlLabel control={<Checkbox onChange={handleBrand} value="Apple" size="small" />} label="Apple" />
+                  <FormControlLabel control={<Checkbox onChange={handleBrand} value="HP" size="small" />} label="HP" />
+                  <FormControlLabel control={<Checkbox onChange={handleBrand} value="Asus" size="small" />} label="Asus" />
+                  <FormControlLabel control={<Checkbox onChange={handleBrand} value="Dell" size="small" />} label="Dell" />
+                  <FormControlLabel control={<Checkbox onChange={handleBrand} value="Acer" size="small" />} label="Acer" />
+                </FormGroup>
+              </AccordionDetails>
+            </Accordion>
+          </div>
+        </div>
+      </div>
+
       {/* Breadcrubms */}
       <div className="bg-white border border-b-[1px] border-[#ddd]">
         <div className="max-w-[1280px] py-8 px-4 mx-auto">
@@ -154,8 +260,24 @@ const Home = () => {
             </div>
           </div>
           {/* Price range slider end here */}
+          {/* Catogory Sorting */}
+          <div className="mb-2">
+            <Accordion className="px-2" defaultExpanded>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
+                <Typography className="text-[#111] accor-heading text-[17px] w-full pt-[5px] pb-[10px] border-b border-[#eee] ">
+                  Category
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <FormGroup>
+                  <FormControlLabel control={<Checkbox onChange={handleCategory} value="Laptops" size="small" />} label="Laptops" />
+                  <FormControlLabel control={<Checkbox onChange={handleCategory} value="Phones" size="small" />} label="Phones" />
+                </FormGroup>
+              </AccordionDetails>
+            </Accordion>
+          </div>
           {/* Product Brand Catogory Sorting */}
-          <div>
+          <div className="mb-2">
             <Accordion className="px-2" defaultExpanded>
               <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
                 <Typography className="text-[#111] accor-heading text-[17px] w-full pt-[5px] pb-[10px] border-b border-[#eee] ">
@@ -180,13 +302,10 @@ const Home = () => {
           <div className="bg-white single_box mb-2  py-[10px] px-[20px] ">
             {/* Sort and pagination items count bar */}
             <div className="flex py-[4px] items-center justify-between">
-              {isMobile ? (
-                <button>
-                  <IoFilter /> Filter
-                </button>
-              ) : (
-                <h2 className="text-[16px] font-semibold">All Laptop</h2>
-              )}
+              <h2 className="text-[16px] hidden lg:block font-semibold">All Laptop</h2>
+              <button onClick={() => SetIsMobile(!isMobile)} className="bg-[#F5F6FB] flex lg:hidden items-center rounded-[5px] py-1 px-3">
+                <IoFilter className="mr-[3px]" /> Filter
+              </button>
               <div className="flex items-center gap-3">
                 <div className="max-w-sm hidden md:flex gap-2 items-center">
                   <Label className="text-[#666] font-semibold text-[13px]" htmlFor="itemNumber" value="Show:" />
@@ -251,8 +370,15 @@ const Home = () => {
               })}
           </div>
           {/* Paginations */}
-          <div className="flex mt-9 mb-5 overflow-x-auto sm:justify-center">
-            <Pagination currentPage={currentPage} totalPages={numberOfPage} onPageChange={onPageChange} showIcons />
+          <div className="flex mt-9 max-w-[500px] mx-auto mb-5 overflow-x-auto sm:justify-center">
+            <Pagination
+              className="mx-auto"
+              layout={width ? 'navigation' : 'pagination'}
+              currentPage={currentPage}
+              totalPages={numberOfPage}
+              onPageChange={onPageChange}
+              showIcons
+            />
           </div>
         </div>
       </main>
