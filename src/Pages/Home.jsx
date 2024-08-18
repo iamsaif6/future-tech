@@ -14,7 +14,8 @@ const Home = () => {
   const [products, setProducts] = useState();
   const [loading, setLoading] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const numberOfPage = Math.ceil(parseInt(63 / itemsPerPage));
+  const [productNumber, setProductNumber] = useState(0);
+  const numberOfPage = Math.ceil(parseInt(productNumber / itemsPerPage));
   const [searchText, setSearchText] = useState('');
   const [brand, setBrand] = useState([]);
   const [category, setCategory] = useState([]);
@@ -23,6 +24,8 @@ const Home = () => {
   const [isMobile, SetIsMobile] = useState(false);
   const [width, setWidth] = useState(window.innerWidth < 600 ? true : false);
   const [order, setOrder] = useState('');
+
+  console.log(productNumber);
 
   // Delay the api call after the price range slider is changes
   useEffect(() => {
@@ -126,11 +129,12 @@ const Home = () => {
         }&order=${order}&filter=${searchText}&brand=${brand}&category=${category}`
       )
       .then(res => {
-        setProducts(res.data);
+        setProducts(res.data.result);
+        setProductNumber(res.data.total);
         // stop loading after 1s after the data load
         setTimeout(() => {
           setLoading(false);
-        }, 500);
+        }, 300);
       });
   }, [currentPage, itemsPerPage, order, searchText, brand, debouncedValue1, category]);
 
@@ -338,6 +342,16 @@ const Home = () => {
           </div>
           {/* Products  */}
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-2">
+            {/* Loading spinner when the product is loading */}
+            {!products && loading && (
+              <div className="text-center col-span-4 mt-9">
+                <Spinner aria-label="Extra large spinner example" size="xl" />
+              </div>
+            )}
+
+            {/* When there is no product found */}
+            {products?.length === 0 && !loading && <div className="text-center col-span-4 mt-9">No product found!</div>}
+
             {products &&
               products.map(item => {
                 return (
@@ -362,8 +376,8 @@ const Home = () => {
                         </ul>
                       </div>
                       <div className="flex flex-grow-0 items-center mt-3 justify-center gap-2">
-                        <span className="text-primary text-[16px] font-semibold">$ {item.price}</span>
-                        <span className="text-[12px] font-medium text-[#666] line-through">$ {item.discountPrice}</span>
+                        <span className="text-primary text-[16px] font-semibold">$ {item.discountPrice}</span>
+                        <span className="text-[12px] font-medium text-[#666] line-through">$ {item.price}</span>
                       </div>
                       <div className="mt-3">
                         <button className="flex hover:bg-secondary hover:text-white text-secondary justify-center rounded-[5px] py-[8px] items-center gap-2 bg-[#F5F6FB] w-full">
