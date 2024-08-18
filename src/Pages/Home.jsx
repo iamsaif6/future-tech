@@ -316,7 +316,7 @@ const Home = () => {
                   </Select>
                 </div>
                 <div className="max-w-sm flex gap-2 items-center">
-                  <Label className="text-[#666] font-semibold text-[13px]" htmlFor="sort" value="Sort By: " />
+                  <Label className="text-[#666] font-semibold text-[13px]" htmlFor="sort" value={width ? '' : 'Sort By:'} />
                   <Select onChange={handleChangeOrder} id="sort" required>
                     <option value="">Default</option>
                     <option value="low">{`Price (Low > High)`}</option>

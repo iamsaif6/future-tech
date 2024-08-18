@@ -7,7 +7,7 @@ export function Footers() {
       <div className="w-full">
         <div className="max-w-[1280px] mx-auto px-4">
           <div className="grid w-full justify-between sm:flex sm:justify-between md:flex md:grid-cols-1">
-            <div>
+            <div className="mb-5">
               <a href="/">
                 <p className=" font-bold text-[30px]">
                   Future <span className="text-primary">Tech</span>

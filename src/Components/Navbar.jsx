@@ -30,7 +30,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
           <Logo></Logo>
           <ul className="flex items-center gap-7">
-            <NavLink>
+            <NavLink className="hidden md:block">
               <span className="flex gap-[17px] items-center">
                 <FiGift className="text-primary text-[22px]" />
                 <span className="text-white mb-0">
@@ -39,7 +39,7 @@ const Navbar = () => {
                 </span>
               </span>
             </NavLink>
-            <NavLink>
+            <NavLink className="hidden md:block">
               <span className="flex gap-[17px] items-center">
                 <AiFillThunderbolt className="text-primary text-[22px]" />
                 <span className="text-white mb-0">
