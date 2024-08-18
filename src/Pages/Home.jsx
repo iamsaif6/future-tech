@@ -19,10 +19,19 @@ const Home = () => {
   const [brand, setBrand] = useState([]);
   const [category, setCategory] = useState([]);
   const [value1, setValue1] = useState([0, 2500]);
+  const [debouncedValue1, setDebouncedValue1] = useState(value1);
   const [isMobile, SetIsMobile] = useState(false);
   const [width, setWidth] = useState(window.innerWidth < 600 ? true : false);
-  // sort and filter
   const [order, setOrder] = useState('');
+
+  // Delay the api call after the price range slider is changes
+  useEffect(() => {
+    const timeoutID = setTimeout(() => {
+      setDebouncedValue1(value1);
+    }, 200);
+    return () => clearInterval(timeoutID);
+  }, [value1]);
+
   // handle chnage order price / date
   const handleChangeOrder = e => {
     setOrder(e.target.value);
@@ -112,8 +121,8 @@ const Home = () => {
     setLoading(true);
     axios
       .get(
-        `${import.meta.env.VITE_DB_URL}/products?&page=${currentPage}&items=${itemsPerPage}&from=${value1[0]}&to=${
-          value1[1]
+        `${import.meta.env.VITE_DB_URL}/products?&page=${currentPage}&items=${itemsPerPage}&from=${debouncedValue1[0]}&to=${
+          debouncedValue1[1]
         }&order=${order}&filter=${searchText}&brand=${brand}&category=${category}`
       )
       .then(res => {
@@ -121,9 +130,9 @@ const Home = () => {
         // stop loading after 1s after the data load
         setTimeout(() => {
           setLoading(false);
-        }, 700);
+        }, 500);
       });
-  }, [currentPage, itemsPerPage, order, searchText, brand, value1, category]);
+  }, [currentPage, itemsPerPage, order, searchText, brand, debouncedValue1, category]);
 
   return (
     <div className=" relative bg-[#f2f4f8]">
